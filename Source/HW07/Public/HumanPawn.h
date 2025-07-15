@@ -50,6 +50,6 @@ private:
 	FVector2D LookInput;
 	bool bIsJumping = false;
 	bool bIsSprinting = false;
-
+	//FVector CurrentVelocity;
 	float MoveSpeed;
 };

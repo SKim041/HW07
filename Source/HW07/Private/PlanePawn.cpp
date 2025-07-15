@@ -16,7 +16,6 @@ APlanePawn::APlanePawn()
 	// 전진 가속도
 	ThrustAccel = 2000.0f;
 	DecelerationRate = 1.0f;
-	CurrentVelocity = FVector::ZeroVector;
 }
 
 void APlanePawn::BeginPlay() 
@@ -109,8 +108,6 @@ void APlanePawn::Tick(float DeltaTime)
 	{
 		CurrentVelocity.Z = 0;
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("CurrentVelocity: %s"), *(CurrentVelocity.ToString()));
 
 	SetActorLocation(GetActorLocation() + CurrentVelocity * DeltaTime);
 }

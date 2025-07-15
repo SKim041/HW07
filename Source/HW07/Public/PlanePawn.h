@@ -25,9 +25,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pawn|Movement")
 	float ThrustAccel;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pawn|Movement")
-	float DecelerationRate;
-
 
 	UFUNCTION()
 	void Rotate(const FInputActionValue& Value);
@@ -46,7 +43,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 private:
-	FVector CurrentVelocity;
+	//FVector CurrentVelocity;
 	FVector MoveInput;
 	float MaxSpeedInAir;
 

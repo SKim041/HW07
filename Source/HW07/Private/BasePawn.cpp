@@ -29,6 +29,8 @@ ABasePawn::ABasePawn()
 	CameraComp->bUsePawnControlRotation = false;
 
 	MaxFallSpeed = -1200.0f;
+	CurrentVelocity = FVector::ZeroVector;
+	Gravity = FVector(0.0f, 0.0f, -980.0f);
 
 }
 
@@ -55,8 +57,9 @@ void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 bool ABasePawn::IsOnGround() 
 {
+	float CapsuleHalfHeight = CapsuleComp->GetScaledCapsuleHalfHeight();
 	FVector Start = GetActorLocation();
-	FVector End = Start - FVector(0, 0, 100);
+	FVector End = Start - FVector(0, 0, CapsuleHalfHeight);
 
 	FHitResult HitResult;
 

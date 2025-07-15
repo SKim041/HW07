@@ -14,6 +14,9 @@ AHumanPawn::AHumanPawn()
 	MoveSpeed = NormalSpeed;
 	SprintMultiplier = 1.7f;
 	MouseSensitivity = 1.0f;
+	JumpImpulse = 500.0f;
+	DecelerationRate = 10.0f;
+
 }
 
 void AHumanPawn::BeginPlay() 
@@ -91,6 +94,26 @@ void AHumanPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCom
 void AHumanPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+
+	if(bIsJumping)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("CurrentVelocity: %s"), *CurrentVelocity.ToString());
+		CurrentVelocity += Gravity * DeltaTime;
+	}
+	AddActorLocalOffset(CurrentVelocity * DeltaTime, true);
+	// xy 감속
+	FVector XYVel = FVector(CurrentVelocity.X, CurrentVelocity.Y, 0);
+	FVector ZVel = FVector(0, 0, CurrentVelocity.Z);
+	CurrentVelocity = FMath::VInterpTo(XYVel, FVector::ZeroVector, DeltaTime, DecelerationRate) + ZVel;
+	if (IsOnGround())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("false"));
+
+		bIsJumping = false;
+		//CurrentVelocity = FVector::ZeroVector;
+		CurrentVelocity.Z = 0.0;
+	}
 }
 
 void AHumanPawn::Move(const FInputActionValue& Value) 
@@ -99,22 +122,24 @@ void AHumanPawn::Move(const FInputActionValue& Value)
 	MoveInput = Value.Get<FVector2D>();
 	if (!MoveInput.IsNearlyZero()) 
 	{
-		// Z 값 무시
-		FVector MoveOffset = FVector(MoveInput.X, MoveInput.Y, 0.0f) * MoveSpeed * UGameplayStatics::GetWorldDeltaSeconds(this);
-		AddActorLocalOffset(MoveOffset, true);
+		//// Z 값 무시
+		//FVector MoveOffset = FVector(MoveInput.X, MoveInput.Y, 0.0f) * MoveSpeed * UGameplayStatics::GetWorldDeltaSeconds(this);
+		//AddActorLocalOffset(MoveOffset, true);
+
+		CurrentVelocity.X = MoveInput.X * MoveSpeed;
+		CurrentVelocity.Y = MoveInput.Y * MoveSpeed;
 	}
 }
 void AHumanPawn::StartJump(const FInputActionValue& Value)
 {
-	bIsJumping = true;
-	if (IsOnGround()) 
+	if (!bIsJumping) 
 	{
-		
+		bIsJumping = true;
+		CurrentVelocity.Z = JumpImpulse;
 	}
 }
 void AHumanPawn::StopJump(const FInputActionValue& Value)
 {
-	bIsJumping = false;
 }
 void AHumanPawn::Look(const FInputActionValue& Value)
 {

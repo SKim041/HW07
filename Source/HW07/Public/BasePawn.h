@@ -34,13 +34,17 @@ public:
 	float MaxFallSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn|Movement")
 	float MouseSensitivity;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Pawn|Movement")
+	FVector CurrentVelocity;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pawn|Movement")
+	float DecelerationRate;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn|Movement")
-	FVector Gravity = FVector(0.0f, 0.0f, -980.0f);
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Pawn|Movement")
+	FVector Gravity;
 
 public:	
 	// Called every frame
@@ -49,6 +53,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(BlueprintCallable, Category = "Pawn|Movement")
 	bool IsOnGround();
 
 };
